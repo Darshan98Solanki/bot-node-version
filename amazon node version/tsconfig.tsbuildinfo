@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/consts/index.ts","./src/utils/index.ts","./src/utils/createapplication/index.ts","./src/utils/getjobs/getcanadajobs.ts","./src/utils/getjobs/getusjob.ts","./src/utils/getshift/index.ts"],"version":"5.7.3"}

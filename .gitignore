@@ -1,0 +1,48 @@
+# Ignore node modules (frontend + backend)
+node_modules/
+frontend/node_modules/
+amazon node version/node_modules/
+
+# Ignore dist folders (anywhere)
+dist/
+**/dist/
+
+# Ignore build outputs
+build/
+**/build/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Cache
+.cache/
+.tmp/
+.DS_Store
+
+# Editor / system files
+.vscode/
+.idea/
+*.swp
+*.swo
+Thumbs.db
+
+# Frontend specific
+frontend/.next/
+frontend/.nuxt/
+frontend/out/
+frontend/.turbo/
+
+# Backend specific
+amazon node version/.vercel/
+amazon node version/.gitignore/
+amazon node version/.turbo/
+frontend/.gitignore/
