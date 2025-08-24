@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Optional: redirects API requests to your backend (on Render/Railway)
+[[redirects]]
+  from = "/*"
+  to = "https://your-backend.onrender.com/:splat"
+  status = 200
