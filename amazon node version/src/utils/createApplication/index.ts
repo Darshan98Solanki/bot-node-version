@@ -46,6 +46,8 @@ export async function createApplication(
       withCredentials: true,
     });
 
+    console.log("response--->",response)
+
     if(response.status === 200){
       const notification = {
           Title: JobData.jobTitle,

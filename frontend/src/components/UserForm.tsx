@@ -203,7 +203,7 @@ export default function UserForm() {
                 <button className="bg-green-500 text-white px-4 py-2 rounded w-full disabled:opacity-50"
                     onClick={() => {
                         START_JOB_HUNT_URLS.map((url: any) => {
-                            axios.post(url + "/start");
+                            axios.post(url+"/start");
                         })
                     }}
                 >Start</button>
