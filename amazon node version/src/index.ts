@@ -45,6 +45,7 @@ const app = express();
 const prisma = new PrismaClient();
 
 app.use(cors());
+app.use(express.json());
 app.use(bodyParser.json());
 
 let isRunning = false;
@@ -58,7 +59,7 @@ async function main({ location, users }: { location: string, users: User[] }) {
         users.map(async (user) => {
 
             const result = await getJobsFromCA({ url, headers: user.headers });
-            const jobCards = result?.data?.searchJobCardsByLocation?.jobCards ?? [];
+            const jobCards = result?.data?.searchJobCardsByLocation?.jobCards;
             console.log("jobs found",jobCards);
 
             for (const job of jobCards) {

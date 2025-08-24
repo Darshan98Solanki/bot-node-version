@@ -13,6 +13,7 @@ export interface User {
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const START_JOB_HUNT_URLS = JSON.parse(import.meta.env.VITE_START_JOB_SERVICE_URLS || "[]");
 
 export default function UserForm() {
     const [users, setUsers] = useState<User[]>([]);
@@ -192,7 +193,24 @@ export default function UserForm() {
                 </button>
 
                 {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+
             </form>
+            <div className="flex space-x-10 mx-5">
+                <button className="bg-green-500 text-white px-4 py-2 rounded w-full disabled:opacity-50"
+                    onClick={() => {
+                        START_JOB_HUNT_URLS.map((url: any) => {
+                            axios.post(url + "/start");
+                        })
+                    }}
+                >Start</button>
+                <button className="bg-red-500 text-white px-4 py-2 rounded w-full disabled:opacity-50"
+                    onClick={() => {
+                        START_JOB_HUNT_URLS.map((url: any) => {
+                            axios.post(url + "/stop");
+                        })
+                    }}
+                >Stop</button>
+            </div>
 
             <UserList
                 users={users}
