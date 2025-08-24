@@ -130,7 +130,7 @@ app.post("/start", async (req, res) => {
 
             //move to next location
             currentLocationIndex = (currentLocationIndex + 1) % availableLocations.length;
-        }, 700); // adjust t 
+        }, 400); // adjust t 
 
         res.json({ message: "Job loop started", users });
     } catch (error) {
