@@ -5,5 +5,5 @@
 # Optional: redirects API requests to your backend (on Render/Railway)
 [[redirects]]
   from = "/*"
-  to = "https://your-backend.onrender.com/:splat"
+  to = "/index.html"
   status = 200
