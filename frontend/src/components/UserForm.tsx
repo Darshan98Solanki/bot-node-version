@@ -13,7 +13,11 @@ export interface User {
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const START_JOB_HUNT_URLS = JSON.parse(import.meta.env.VITE_START_JOB_SERVICE_URLS || "[]");
+const START_JOB_HUNT_URLS = (import.meta.env.VITE_START_JOB_SERVICE_URLS || "")
+    .split(",")
+    .map((url:any) => url.trim())
+    .filter(Boolean);
+
 
 export default function UserForm() {
     const [users, setUsers] = useState<User[]>([]);
