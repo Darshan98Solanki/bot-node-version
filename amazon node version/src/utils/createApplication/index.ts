@@ -10,15 +10,22 @@ interface CreateApplicationPayload {
   activeApplicationCheckEnabled: boolean;
 }
 
+interface JobData {
+  jobTitle: string;
+  locationName: string;
+  jobType: string;
+  employmentType: string;
+}
+
 export async function createApplication(
   jobId: string,
   scheduleId: string,
   bbCandidateId: string,
   accessToken: string,
   API_URL: string,
-  JobData : any
-) {
-
+  jobData: JobData,
+  cookie: string
+): Promise<boolean> { 
   const payload: CreateApplicationPayload = {
     jobId,
     dspEnabled: true,
@@ -33,6 +40,7 @@ export async function createApplication(
     const response = await axios.post(API_URL, payload, {
       headers: {
         accept: "application/json, text/plain, */*",
+        cookie: cookie,
         authorization: accessToken,
         "bb-ui-version": "bb-ui-v2",
         "cache-control": "no-cache",
@@ -46,14 +54,14 @@ export async function createApplication(
       withCredentials: true,
     });
 
-    console.log("response--->",response)
+    console.log("response--->",response.data)
 
-    if(response.status === 200){
+    if(response.status === 200 || response.status === 201){
       const notification = {
-          Title: JobData.jobTitle,
-          Location: JobData.locationName,
-          Type: JobData.jobType,
-          Employement_Type: JobData.employmentType,
+          Title: jobData.jobTitle,
+          Location: jobData.locationName,
+          Type: jobData.jobType,
+          Employment_Type: jobData.employmentType,
       } 
       console.log("✅ Application created:");
       sendMessage(notification)
@@ -62,5 +70,6 @@ export async function createApplication(
   } catch (error: any) { 
     console.log("error",error);
     console.error("❌ Error creating application:");
+    return false;
   }
 }
