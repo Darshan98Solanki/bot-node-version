@@ -90,7 +90,7 @@ async function getJobs(user: User): Promise<any[]> {
     }
 
     try {
-        const result = await getJobsFromUS({ url, headers: user.headers });
+        const result = await getJobsFromCA({ url, headers: user.headers });
         const jobCards = result?.data?.searchJobCardsByLocation?.jobCards || [];
         jobsCache.set(cacheKey, jobCards);
         return jobCards;
@@ -324,7 +324,7 @@ app.post("/restart", async (req, res) => {
 // User CRUD operations
 app.post("/user", async (req, res) => {
     const { id, name, email, location, sessionToken, accessToken, bbCandidateId, cookie } = req.body;
-
+    console.log("Received user data:", req.body);
     try {
         let user;
 
