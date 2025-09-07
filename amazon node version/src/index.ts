@@ -171,6 +171,7 @@ async function main({ location, users }: { location: string, users: User[] }): P
 async function initializeUsers(): Promise<void> {
     try {
         const usersData = await prisma.user.findMany();
+        console.log("usersData---->",usersData)
         groupedUsers = {};
         availableLocations = [];
 
