@@ -131,7 +131,8 @@ async function processUser(user: User): Promise<void> {
                             user.bbCandidateId,
                             user.accessToken,
                             createApplicationURL,
-                            jobInfo
+                            jobInfo,
+                            user.sessionToken
                         );
                         processedCount++;
                     } catch (error) {
