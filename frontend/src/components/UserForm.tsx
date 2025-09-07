@@ -10,12 +10,13 @@ export interface User {
     sessionToken: string;
     accessToken: string;
     bbCandidateId: string;
+    cookie: string;
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const START_JOB_HUNT_URLS = (import.meta.env.VITE_START_JOB_SERVICE_URLS || "")
     .split(",")
-    .map((url:any) => url.trim())
+    .map((url: any) => url.trim())
     .filter(Boolean);
 
 
@@ -49,6 +50,7 @@ export default function UserForm() {
         sessionToken: "",
         accessToken: "",
         bbCandidateId: "",
+        cookie: "",
     });
 
     // ✅ Fetch users only once
@@ -71,7 +73,9 @@ export default function UserForm() {
         }
     }, [editingUser]);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    ) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
@@ -79,6 +83,7 @@ export default function UserForm() {
         e.preventDefault();
         setLoading(true);
         setError(null);
+        parseCookies();
 
         try {
             if (editingUser) {
@@ -92,7 +97,6 @@ export default function UserForm() {
                     prev.map((u) => (u.id === editingUser.id ? res.data : u))
                 );
             } else {
-                // ✅ Add new user
                 const res = await axios.post(`${API_BASE_URL}/user`, formData);
                 setUsers((prev) => [...prev, res.data]);
             }
@@ -105,6 +109,7 @@ export default function UserForm() {
                 sessionToken: "",
                 accessToken: "",
                 bbCandidateId: "",
+                cookie: "",
             });
             setEditingUser(null);
         } catch (err: any) {
@@ -120,6 +125,38 @@ export default function UserForm() {
             setUsers((prev) => prev.filter((u) => u.id !== id));
         } catch (err) {
             console.error("Failed to delete user", err);
+        }
+    };
+
+    const parseCookies = () => {
+        try {
+            const lines = formData.cookie.trim().split('\n');
+            const cookies:any[] = [];
+
+            lines.forEach(line => {
+                const parts = line.split('\t');
+                if (parts.length >= 2) {
+                    const name = parts[0].trim();
+                    const value = parts[1].trim();
+
+                    // Remove quotes if present
+                    const cleanValue = value.replace(/^"(.*)"$/, '$1');
+
+                    // Skip empty values
+                    if (name && cleanValue) {
+                        cookies.push({ name, value: cleanValue });
+                    }
+                }
+            });
+
+            // Create cookie string
+            const cookieString = cookies
+                .map(cookie => `${cookie.name}=${cookie.value}`)
+                .join('; ');
+
+            formData.cookie = cookieString;
+        } catch (error:any) {
+            alert('Error parsing cookies: ' + error.message);
         }
     };
 
@@ -183,6 +220,13 @@ export default function UserForm() {
                     placeholder="BB Candidate ID"
                     className="border px-3 py-2 w-full rounded"
                 />
+                <textarea
+                    name="cookie"
+                    value={formData.cookie}
+                    onChange={handleChange}
+                    placeholder="Cookie"
+                    className="border px-3 py-2 w-full rounded"
+                />
 
                 <button
                     type="submit"
@@ -203,7 +247,7 @@ export default function UserForm() {
                 <button className="bg-green-500 text-white px-4 py-2 rounded w-full disabled:opacity-50"
                     onClick={() => {
                         START_JOB_HUNT_URLS.map((url: any) => {
-                            axios.post(url+"/start");
+                            axios.post(url + "/start");
                         })
                     }}
                 >Start</button>

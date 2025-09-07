@@ -15,4 +15,5 @@ model User {
   sessionToken String?
   accessToken  String?
   bbCandidateId  String?
+  cookie       String?
 }

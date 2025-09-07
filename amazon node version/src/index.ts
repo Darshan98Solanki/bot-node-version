@@ -19,6 +19,7 @@ interface User {
     accessToken: string;
     bbCandidateId: string;
     headers?: any;
+    cookie: string;
 }
 
 const locationOptions = [
@@ -75,6 +76,7 @@ async function getSchedules(jobId: string): Promise<any[]> {
         schedulesCache.set(jobId, data);
         return data;
     } catch (error) {
+        console.log(error)
         return [];
     }
 }
@@ -88,11 +90,12 @@ async function getJobs(user: User): Promise<any[]> {
     }
 
     try {
-        const result = await getJobsFromCA({ url, headers: user.headers });
+        const result = await getJobsFromUS({ url, headers: user.headers });
         const jobCards = result?.data?.searchJobCardsByLocation?.jobCards || [];
         jobsCache.set(cacheKey, jobCards);
         return jobCards;
     } catch (error) {
+        console.log(error)
         return [];
     }
 }
@@ -101,7 +104,9 @@ async function getJobs(user: User): Promise<any[]> {
 async function processUser(user: User): Promise<void> {
     try {
         const jobCards = await getJobs(user);
-        console.log("job cards---->",jobCards)
+        if(jobCards.length !== 0)
+            console.log("job cards---->",jobCards)
+        
         if (jobCards.length === 0) return;
 
         // Process ALL jobs simultaneously - no limits
@@ -132,7 +137,7 @@ async function processUser(user: User): Promise<void> {
                             user.accessToken,
                             createApplicationURL,
                             jobInfo,
-                            user.sessionToken
+                            user.cookie
                         );
                         processedCount++;
                     } catch (error) {
@@ -318,7 +323,7 @@ app.post("/restart", async (req, res) => {
 
 // User CRUD operations
 app.post("/user", async (req, res) => {
-    const { id, name, email, location, sessionToken, accessToken, bbCandidateId } = req.body;
+    const { id, name, email, location, sessionToken, accessToken, bbCandidateId, cookie } = req.body;
 
     try {
         let user;
@@ -326,11 +331,11 @@ app.post("/user", async (req, res) => {
         if (id) {
             user = await prisma.user.update({
                 where: { id },
-                data: { name, email, location, sessionToken, accessToken, bbCandidateId },
+                data: { name, email, location, sessionToken, accessToken, bbCandidateId, cookie },
             });
         } else {
             user = await prisma.user.create({
-                data: { name, email, location, sessionToken, accessToken, bbCandidateId },
+                data: { name, email, location, sessionToken, accessToken, bbCandidateId, cookie },
             });
         }
 
