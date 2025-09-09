@@ -73,7 +73,7 @@ interface SearchScheduleResponse {
   };
 }
 
-export async function getSchedulesForJob(jobId: string): Promise<ScheduleCard[] | null> {
+export async function getSchedulesForJob(jobId: string): Promise<ScheduleCard[]> {
   const url = "https://e5mquma77feepi2bdn4d6h3mpu.appsync-api.us-east-1.amazonaws.com/graphql";
 
   const graphqlQuery = `
@@ -172,13 +172,13 @@ export async function getSchedulesForJob(jobId: string): Promise<ScheduleCard[] 
     );
 
     if (response.status === 200) {
-      return response.data?.data?.searchScheduleCards?.scheduleCards || [];
+      console.log(response.data);
+      return response.data?.data?.searchScheduleCards?.scheduleCards;
     } else {
       console.error("Request failed:", response.status);
-      return null;
     }
   } catch (err: any) {
     console.error("Error fetching schedules:", err.message);
-    return null;
   }
+  return ["job not found" as unknown as ScheduleCard];
 }

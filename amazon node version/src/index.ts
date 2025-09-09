@@ -66,14 +66,14 @@ let errorCount = 0;
 
 // Get schedules - cached but unlimited concurrent
 async function getSchedules(jobId: string): Promise<any[]> {
-    if (schedulesCache.has(jobId)) {
-        return schedulesCache.get(jobId) || [];
-    }
+    // if (schedulesCache.has(jobId)) {
+    //     return schedulesCache.get(jobId) || [];
+    // }
 
     try {
         const schedules = await getSchedulesForJob(jobId);
-        const data = schedules || [];
-        schedulesCache.set(jobId, data);
+        const data = schedules;
+        // schedulesCache.set(jobId, data);
         return data;
     } catch (error) {
         console.log(error)
