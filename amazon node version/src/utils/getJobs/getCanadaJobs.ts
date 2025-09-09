@@ -1,8 +1,14 @@
 // utils/get_jobs/get_ca_jobs.ts
 import axios from "axios";
 
-export async function getJobsFromCA({url, headers}:{url: string, headers: Record<string, string>}) {
-  // GraphQL payload
+export async function getJobsFromCA({
+  url,
+  headers,
+}: {
+  url: string;
+  headers: Record<string, string>;
+}) {
+  // GraphQL payload (exactly matching cURL)
   const data = {
     query: `query searchJobCardsByLocation($searchJobRequest: SearchJobRequest!) {
       searchJobCardsByLocation(searchJobRequest: $searchJobRequest) {
@@ -47,6 +53,7 @@ export async function getJobsFromCA({url, headers}:{url: string, headers: Record
           jobContainerJobMetaL1
           virtualLocation
           poolingEnabled
+          payFrequency
           __typename
         }
         __typename
@@ -56,30 +63,37 @@ export async function getJobsFromCA({url, headers}:{url: string, headers: Record
       searchJobRequest: {
         locale: "en-CA",
         country: "Canada",
-        pageSize: 100,
+        keyWords: "",
+        equalFilters: [],
+        containFilters: [
+          {
+            key: "isPrivateSchedule",
+            val: ["false"],
+          },
+        ],
+        rangeFilters: [],
+        orFilters: [],
+        dateFilters: [
+          {
+            key: "firstDayOnSite",
+            range: {
+              startDate: "2025-09-09", // same as cURL
+            },
+          },
+        ],
         sorters: [
           {
             fieldName: "totalPayRateMax",
             ascending: "false",
           },
         ],
-        dateFilters: [
-          {
-            key: "firstDayOnSite",
-            range: {
-              startDate: "2025-07-16",
-            },
-          },
-        ],
+        pageSize: 100,
       },
     },
   };
 
   try {
-    // Send POST request
     const response = await axios.post(url, data, { headers });
-
-    // Return parsed response
     return response.data;
   } catch (error: any) {
     if (error.response) {

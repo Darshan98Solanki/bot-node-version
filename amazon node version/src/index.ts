@@ -83,16 +83,13 @@ async function getSchedules(jobId: string): Promise<any[]> {
 
 // Get jobs - cached but unlimited concurrent
 async function getJobs(user: User): Promise<any[]> {
-    const cacheKey = `${user.id}_${user.location}`;
-    
-    if (jobsCache.has(cacheKey)) {
-        return jobsCache.get(cacheKey) || [];
-    }
 
     try {
         const result = await getJobsFromCA({ url, headers: user.headers });
-        const jobCards = result?.data?.searchJobCardsByLocation?.jobCards || [];
-        jobsCache.set(cacheKey, jobCards);
+        const jobCards = result?.data?.searchJobCardsByLocation?.jobCards;
+        if(jobCards && jobCards.length > 0) {
+            console.log("result---->",result)
+        }
         return jobCards;
     } catch (error) {
         console.log(error)
